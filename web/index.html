@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="MSP430 Q-learning distributed routing simulator for wireless sensor networks."
+    />
+    <title>MSP430 Q-Learning Router</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#simulator" aria-label="MSP430 Q-Learning Router home">
+          <span>QL</span>
+          <strong>MSP430 Q-Learning Router</strong>
+        </a>
+        <nav aria-label="Project sections">
+          <a href="#simulator">Simulator</a>
+          <a href="#firmware">Firmware</a>
+          <a href="#metrics">Metrics</a>
+        </nav>
+      </header>
+
+      <section id="simulator" class="simulator-layout">
+        <section class="control-panel" aria-label="Simulation controls">
+          <p class="eyebrow">Embedded AI Routing</p>
+          <h1>Energy-aware next-hop learning for MSP430 sensor nodes</h1>
+          <div class="control-grid">
+            <label>
+              Episodes
+              <input id="episodesInput" type="number" min="25" max="1000" step="25" value="240" />
+            </label>
+            <label>
+              Exploration
+              <input id="epsilonInput" type="range" min="0" max="40" value="10" />
+              <span id="epsilonValue">10%</span>
+            </label>
+          </div>
+          <div class="actions">
+            <button id="runButton" type="button">Run</button>
+            <button id="stepButton" type="button">Step</button>
+            <button id="resetButton" type="button">Reset</button>
+          </div>
+          <dl class="state-readout">
+            <div>
+              <dt>Current State</dt>
+              <dd id="stateValue">S0 High battery, good link</dd>
+            </div>
+            <div>
+              <dt>Selected Route</dt>
+              <dd id="routeValue">Node 2 relay</dd>
+            </div>
+            <div>
+              <dt>Q-table Size</dt>
+              <dd>48 bytes</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="network-panel" aria-label="Network visualization">
+          <canvas id="networkCanvas" width="960" height="640"></canvas>
+          <div class="node-strip">
+            <span>Node 1</span>
+            <span>Node 2</span>
+            <span>Node 3</span>
+            <span>Gateway</span>
+          </div>
+        </section>
+
+        <aside class="q-panel" aria-label="Q table">
+          <div class="panel-heading">
+            <p class="eyebrow">Learning Table</p>
+            <strong id="episodeValue">Episode 0</strong>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>State</th>
+                <th>A0</th>
+                <th>A1</th>
+                <th>A2</th>
+              </tr>
+            </thead>
+            <tbody id="qTableBody"></tbody>
+          </table>
+        </aside>
+      </section>
+
+      <section id="metrics" class="metrics-grid" aria-label="Simulation metrics">
+        <article>
+          <span id="pdrMetric">0.000</span>
+          <p>Packet delivery ratio</p>
+        </article>
+        <article>
+          <span id="energyMetric">0.00</span>
+          <p>Average energy cost</p>
+        </article>
+        <article>
+          <span id="latencyMetric">0.00 ms</span>
+          <p>Average latency</p>
+        </article>
+        <article>
+          <span id="batteryMetric">100.0%</span>
+          <p>Remaining battery</p>
+        </article>
+      </section>
+
+      <section id="firmware" class="firmware-section">
+        <div>
+          <p class="eyebrow">Firmware Core</p>
+          <h2>Q(s,a) update loop sized for LaunchPad-class MSP430 boards</h2>
+        </div>
+        <pre><code>Q[state][action] =
+    Q[state][action] +
+    ALPHA * (reward + GAMMA * max_next_q - Q[state][action]);</code></pre>
+        <dl>
+          <div>
+            <dt>MCU Targets</dt>
+            <dd>MSP430G2553, MSP430FR5969, MSP430F5529</dd>
+          </div>
+          <div>
+            <dt>Radio Options</dt>
+            <dd>nRF24L01+, CC1101, LoRa SX1278</dd>
+          </div>
+          <div>
+            <dt>Deployment</dt>
+            <dd>Build with MSP430 GCC, flash with MSPDebug, assign node IDs per device</dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
+
