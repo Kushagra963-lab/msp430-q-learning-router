@@ -11,6 +11,20 @@ const links = [
   { name: "Gateway direct", quality: 47, energy: 4.6, latency: 12, dropPenalty: 0.28 },
 ];
 
+const theme = {
+  ink: "#fff7ed",
+  panel: "#16120f",
+  panelSoft: "#241913",
+  mutedLine: "rgba(255, 247, 237, 0.18)",
+  grid: "rgba(255, 247, 237, 0.07)",
+  active: "#4dd6c1",
+  activeSoft: "rgba(77, 214, 193, 0.3)",
+  amber: "#f6bd60",
+  danger: "#f97066",
+  blue: "#8ab4ff",
+  nodeText: "#10100c",
+};
+
 const state = {
   episode: 0,
   battery: 100,
@@ -136,12 +150,15 @@ function resizeCanvas() {
 function drawNode(node, active) {
   context.beginPath();
   context.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-  context.fillStyle = active ? "#6be4b7" : "#101617";
+  context.shadowColor = active ? theme.activeSoft : "rgba(0, 0, 0, 0.36)";
+  context.shadowBlur = active ? 22 : 10;
+  context.fillStyle = active ? theme.active : theme.panelSoft;
   context.fill();
+  context.shadowBlur = 0;
   context.lineWidth = 2;
-  context.strokeStyle = active ? "#f4f7f4" : "rgba(244, 247, 244, 0.42)";
+  context.strokeStyle = active ? theme.ink : "rgba(255, 247, 237, 0.38)";
   context.stroke();
-  context.fillStyle = active ? "#04110e" : "#f4f7f4";
+  context.fillStyle = active ? theme.nodeText : theme.ink;
   context.font = "800 13px Inter, system-ui, sans-serif";
   context.textAlign = "center";
   context.fillText(node.label, node.x, node.y + 4);
@@ -163,10 +180,10 @@ function drawNetwork() {
   ];
 
   context.clearRect(0, 0, width, height);
-  context.fillStyle = "rgba(244, 247, 244, 0.04)";
+  context.fillStyle = theme.grid;
   for (let x = 36; x < width; x += 56) {
     for (let y = 36; y < height; y += 56) {
-      context.fillRect(x, y, 1.5, 1.5);
+      context.fillRect(x, y, 1.25, 1.25);
     }
   }
 
@@ -175,8 +192,11 @@ function drawNetwork() {
     context.moveTo(route[0].x, route[0].y);
     route.slice(1).forEach((node) => context.lineTo(node.x, node.y));
     context.lineWidth = index === state.currentAction ? 5 : 2;
-    context.strokeStyle = index === state.currentAction ? "#6be4b7" : "rgba(244, 247, 244, 0.18)";
+    context.strokeStyle = index === state.currentAction ? theme.active : theme.mutedLine;
+    context.shadowColor = index === state.currentAction ? theme.activeSoft : "transparent";
+    context.shadowBlur = index === state.currentAction ? 16 : 0;
     context.stroke();
+    context.shadowBlur = 0;
   });
 
   state.pulses = state.pulses
@@ -191,8 +211,11 @@ function drawNetwork() {
     const y = from.y + (to.y - from.y) * pulse.progress;
     context.beginPath();
     context.arc(x, y, 7, 0, Math.PI * 2);
-    context.fillStyle = pulse.delivered ? "#ffd166" : "#ff6b6b";
+    context.shadowColor = pulse.delivered ? "rgba(246, 189, 96, 0.5)" : "rgba(249, 112, 102, 0.45)";
+    context.shadowBlur = 12;
+    context.fillStyle = pulse.delivered ? theme.amber : theme.danger;
     context.fill();
+    context.shadowBlur = 0;
   });
 
   nodes.forEach((node, index) => drawNode(node, index === 0 || index === 3 || index === state.currentAction + 1));
@@ -242,4 +265,3 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 render();
 setInterval(drawNetwork, 1000 / 60);
-
