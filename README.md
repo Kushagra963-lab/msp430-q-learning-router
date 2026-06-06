@@ -6,6 +6,8 @@ This project implements the core of a Q-learning based next-hop selector for res
 
 Live dashboard: https://kushagra963-lab.github.io/msp430-q-learning-router/
 
+Deployment: every push to `main` that changes `web/` or the deploy workflow republishes the dashboard to the `gh-pages` branch with GitHub Actions.
+
 ## What Is Included
 
 - Embedded C routing engine for MSP430 targets.
